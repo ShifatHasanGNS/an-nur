@@ -2,62 +2,74 @@
 
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
+
+import {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+
 export default function NavBar() {
   return (
     <>
-      <div className="navbar bg-slate-900 shadow-md rounded px-auto mx-auto px-10 sm:px-50">
+      <div className="navbar sticky top-0 backdrop-blur-lg shadow-lg rounded p-auto mx-auto px-10 sm:px-50 bg-[rgba(49,65,88,0.3)]">
         <div className="navbar-start">
-          <div className="dropdown">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h7"
-                />{" "}
-              </svg>
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-slate-900 rounded-box z-1 mt-3 w-52 p-2 shadow-md"
-            >
-              <li>
-                <a>Homepage</a>
-              </li>
-              <li>
-                <a>Portfolio</a>
-              </li>
-              <li>
-                <a>About</a>
-              </li>
-            </ul>
-          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {" "}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h7"
+                  />{" "}
+                </svg>
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>// TODO: SheetTitle</SheetTitle>
+                <SheetDescription>// TODO: SheetDescription</SheetDescription>
+              </SheetHeader>
+              // TODO: SheetBody
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button type="submit">// TODO: SheetClose</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
         </div>
+
         <div className="navbar-center">
           <Link
             href="/"
-            className="text-xl cursor-pointer font-bold text-emerald-50"
+            className="text-2xl cursor-pointer font-extrabold font-serif text-emerald-50"
           >
             An-Nur
           </Link>
         </div>
+
         <div className="navbar-end">
           <button className="btn btn-ghost btn-circle">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -75,7 +87,7 @@ export default function NavBar() {
             <div className="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

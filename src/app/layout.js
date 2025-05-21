@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
         >
           <div className="w-full mx-auto justify-center items-center">
             <NavBar />
-            <main className="container min-h-screen my-10 mx-auto max-w-screen-xl justify-center items-center">
+            <main className="container min-h-screen my-10 mx-auto p-6 max-w-screen-xl justify-center items-center">
               {children}
             </main>
             <Footer />
