@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Footer() {
+function Footer() {
   return (
     <>
       <footer className="bottom-0 backdrop-blur-lg footer footer-horizontal footer-center bg-[rgba(49,65,88,0.3)] text-base-content rounded p-8">
@@ -14,3 +14,5 @@ export default function Footer() {
     </>
   );
 }
+
+export { Footer };

@@ -7,4 +7,4 @@ const SessionWrapepr = ({ children }) => {
   return <SessionProvider>{children}</SessionProvider>;
 };
 
-export default SessionWrapepr;
+export { SessionWrapepr };
