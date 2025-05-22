@@ -15,26 +15,27 @@ const NavBar = memo(function NavBar() {
   const { setSelectedPlan } = useContext(PlanSelectionContext);
 
   return (
-    <>
-      <div className="navbar sticky top-0 justify-center items-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] rounded-lg p-auto mx-auto px-6 sm:px-50 bg-slate-900/20 border border-slate-800/30 hover:bg-slate-900/30 transition-all duration-300">
+    <div className="navbar sticky top-0 justify-between items-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] rounded-lg p-auto mx-auto px-6 sm:px-50 bg-slate-900/20 border border-slate-800/30 hover:bg-slate-900/30 transition-all duration-300">
+      <div className="flex items-center gap-4">
         {session && (
-          <div className="navbar-start">
-            <StudyPlansSheet
-              resultsCount={resultsCount}
-              onSelectPlan={setSelectedPlan}
-            />
-          </div>
+          <StudyPlansSheet
+            resultsCount={resultsCount}
+            onSelectPlan={setSelectedPlan}
+          />
         )}
+        {!session && <Brand nameValue={name} />}
+      </div>
 
-        <div className="navbar-center ml-6 mr-6 sm:ml-16 sm:mr-16">
+      {session && (
+        <div className="flex-1 flex justify-center">
           <Brand nameValue={name} />
         </div>
+      )}
 
-        <div className="navbar-end">
-          <UserMenu session={session} />
-        </div>
+      <div className="flex items-center">
+        <UserMenu session={session} />
       </div>
-    </>
+    </div>
   );
 });
 

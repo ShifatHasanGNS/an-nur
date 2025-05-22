@@ -22,7 +22,14 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import { BookOpen, Youtube, FileText, AlertCircle } from "lucide-react";
+import {
+  BookOpen,
+  Youtube,
+  FileText,
+  AlertCircle,
+  Copy,
+  Check,
+} from "lucide-react";
 
 import {
   Select,
@@ -43,6 +50,7 @@ function MagicalArea({ selectedPlan }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [level, setLevel] = useState("Just Curious");
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     if (selectedPlan) {
@@ -116,6 +124,16 @@ function MagicalArea({ selectedPlan }) {
       setIsLoading(false);
     }
   }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(result);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   // Get appropriate icon based on item index
   const getIcon = (index) => {
@@ -264,7 +282,18 @@ function MagicalArea({ selectedPlan }) {
         </Card>
       )}
       {!isLoading && result && (
-        <Card className="flex flex-col glass-card shadow-2xl animate-fade-in">
+        <Card className="flex flex-col glass-card shadow-2xl animate-fade-in relative group">
+          <button
+            onClick={handleCopy}
+            className="absolute top-4 right-4 p-2 rounded-lg bg-slate-800/40 hover:bg-slate-700/40 backdrop-blur-sm border border-slate-700/50 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-slate-900/20 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+            aria-label="Copy to clipboard"
+          >
+            {copySuccess ? (
+              <Check className="h-5 w-5 text-emerald-400" />
+            ) : (
+              <Copy className="h-5 w-5 text-slate-300 group-hover:text-slate-100 transition-colors duration-300" />
+            )}
+          </button>
           <CardHeader>
             <CardTitle className="text-lg line-clamp-2">{title}</CardTitle>
           </CardHeader>
@@ -279,9 +308,7 @@ function MagicalArea({ selectedPlan }) {
                       {...props}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={
-                        "underline text-blue-600 font-semibold transition-colors hover:text-blue-800 focus:ring-2 focus:ring-blue-400"
-                      }
+                      className="underline text-blue-600 font-semibold transition-colors hover:text-blue-800 focus:ring-2 focus:ring-blue-400"
                     >
                       {props.children}
                     </a>

@@ -177,6 +177,9 @@ Based on the ${PROMPT} and selected ${LEVEL}, deliver a response that:
 11. Use markdown bold for bold text
 12. Use markdown italic for italic text
 13. Use markdown strikethrough for strikethrough text
+14. Make sure put proper spacing between sections. and, make sure to indent lines properly. use '#' or HTML features to do it or do it anyway possible.
+15. Always give Reference (as url-text) at the end. The URLs must point to a valid Resourceful websites.
+16. Format the overall content the most suitable and the best way possible.
 
 Remember: The response should be comprehensive enough that the user doesn't need additional clarification for their stated knowledge level and purpose.`;
 }

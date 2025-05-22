@@ -49,7 +49,7 @@ const UserMenu = memo(function UserMenu({ session }) {
     return (
       <Button
         variant="outline"
-        className="font-semibold text-md"
+        className="font-semibold text-md bg-slate-800/40 hover:bg-slate-700/40 border-slate-700/50 text-slate-200 hover:text-white transition-all duration-300"
         onClick={() => signIn("google")}
       >
         Sign in
@@ -59,11 +59,11 @@ const UserMenu = memo(function UserMenu({ session }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-full transition-all duration-300">
         {session?.user?.image ? (
-          <Avatar>
+          <Avatar className="border-2 border-slate-700/50 hover:border-slate-600/50 transition-all duration-300">
             <AvatarImage src={session.user.image} />
-            <AvatarFallback>{`${session.user.name}'s Profile`}</AvatarFallback>
+            <AvatarFallback className="bg-slate-800/40 text-slate-200">{`${session.user.name}'s Profile`}</AvatarFallback>
           </Avatar>
         ) : (
           <svg
@@ -72,7 +72,7 @@ const UserMenu = memo(function UserMenu({ session }) {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="size-6"
+            className="size-6 text-slate-200 hover:text-white transition-colors duration-300"
           >
             <path
               strokeLinecap="round"
@@ -82,7 +82,7 @@ const UserMenu = memo(function UserMenu({ session }) {
           </svg>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800/50 rounded-xl shadow-xl">
+      <DropdownMenuContent className="w-56 p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800/50 rounded-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]">
         <DropdownMenuLabel className="text-center my-3 text-slate-200 font-semibold">
           Topics
         </DropdownMenuLabel>
@@ -94,7 +94,7 @@ const UserMenu = memo(function UserMenu({ session }) {
             <DropdownMenuItem key={index} asChild>
               <Link
                 href={`/${topic}`}
-                className="w-full text-center cursor-pointer text-slate-300 hover:text-white hover:bg-slate-800/50 py-2 px-3 rounded-lg transition-all duration-200"
+                className="w-full text-center cursor-pointer text-slate-300 hover:text-white hover:bg-slate-800/50 py-2 px-3 rounded-lg transition-all duration-300 hover:shadow-[0_4px_16px_0_rgba(31,38,135,0.1)]"
                 onClick={handleNavigation(`/${topic}`)}
                 prefetch={true}
               >
@@ -106,14 +106,14 @@ const UserMenu = memo(function UserMenu({ session }) {
 
         <DropdownMenuSeparator className="border-slate-700/50 mt-4 mb-3" />
 
-        <DropdownMenuLabel className="my-2 text-center text-slate-400 text-sm">
+        <DropdownMenuLabel className="my-2 text-center text-slate-400/80 text-sm">
           {session.user.email}
         </DropdownMenuLabel>
 
         <DropdownMenuItem className="my-2 text-center">
           <Button
             variant="destructive"
-            className="w-full mx-auto bg-gradient-to-r from-rose-800 via-rose-700 to-rose-800 text-white font-semibold shadow-lg hover:from-rose-700 hover:via-rose-600 hover:to-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-600 focus:ring-offset-2 transition-all duration-300"
+            className="w-full mx-auto bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-semibold shadow-lg hover:from-slate-600 hover:via-slate-500 hover:to-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300"
             onClick={() => signOut()}
           >
             Sign out
