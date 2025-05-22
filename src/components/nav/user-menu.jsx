@@ -15,17 +15,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-const topics = [
-  "chemistry",
-  "health",
-  "mathematics",
-  "physics",
-  "quiz",
-  "research-news",
-  "science",
-  "survey",
-  "technology",
-];
+const topics = ["quiz", "science"];
 
 function toTitleCase(str) {
   if (!str) return "";
