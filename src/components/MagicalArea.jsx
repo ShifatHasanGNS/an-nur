@@ -29,6 +29,9 @@ import {
   AlertCircle,
   Copy,
   Check,
+  RotateCcw,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 import {
@@ -51,6 +54,9 @@ function MagicalArea({ selectedPlan }) {
   const [error, setError] = useState(null);
   const [level, setLevel] = useState("Just Curious");
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speechSynthesis, setSpeechSynthesis] = useState(null);
+  const [availableVoices, setAvailableVoices] = useState([]);
 
   useEffect(() => {
     if (selectedPlan) {
@@ -59,6 +65,41 @@ function MagicalArea({ selectedPlan }) {
       setResult(selectedPlan.result || "");
     }
   }, [selectedPlan]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const synth = window.speechSynthesis;
+    setSpeechSynthesis(synth);
+
+    // Load voices
+    const loadVoices = () => {
+      const voices = synth.getVoices();
+      setAvailableVoices(voices);
+    };
+
+    // Chrome loads voices asynchronously
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = loadVoices;
+    }
+    loadVoices();
+
+    // Cleanup
+    return () => {
+      if (synth) {
+        synth.cancel();
+      }
+    };
+  }, []);
+
+  const handleReset = () => {
+    setPrompt("");
+    setTitle("");
+    setResult("");
+    setError(null);
+    setLevel("Just Curious");
+    setCopySuccess(false);
+  };
 
   async function generateContent(prompt) {
     try {
@@ -135,6 +176,73 @@ function MagicalArea({ selectedPlan }) {
     }
   };
 
+  const getBestVoice = () => {
+    if (!availableVoices.length) return null;
+
+    // Priority order for voice selection
+    const voicePriorities = [
+      { name: "Google", lang: "en-US" },
+      { name: "Microsoft", lang: "en-US" },
+      { name: "Samantha", lang: "en-US" },
+      { name: "Daniel", lang: "en-GB" },
+      { name: "Karen", lang: "en-AU" },
+      { name: "Moira", lang: "en-IE" },
+      { name: "Tessa", lang: "en-ZA" },
+      { name: "Veena", lang: "en-IN" },
+    ];
+
+    // Try to find a voice matching our priorities
+    for (const priority of voicePriorities) {
+      const voice = availableVoices.find(
+        (v) => v.name.includes(priority.name) && v.lang.includes(priority.lang)
+      );
+      if (voice) return voice;
+    }
+
+    // Fallback to any English voice
+    return (
+      availableVoices.find((v) => v.lang.includes("en")) || availableVoices[0]
+    );
+  };
+
+  const handleListen = () => {
+    if (!speechSynthesis) return;
+
+    if (isSpeaking) {
+      speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(result);
+
+    // Get the best available voice
+    const voice = getBestVoice();
+    if (voice) {
+      utterance.voice = voice;
+    }
+
+    // Optimize speech parameters for natural-sounding speech
+    utterance.rate = 1.0; // Normal speed
+    utterance.pitch = 1.0; // Natural pitch
+    utterance.volume = 1.0; // Full volume
+
+    // Add pauses for better readability
+    utterance.text = result
+      .replace(/\./g, ". ")
+      .replace(/\!/g, "! ")
+      .replace(/\?/g, "? ")
+      .replace(/\n/g, ". ");
+
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    // Ensure clean state before speaking
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
+
   // Get appropriate icon based on item index
   const getIcon = (index) => {
     switch (index) {
@@ -176,19 +284,30 @@ function MagicalArea({ selectedPlan }) {
   };
 
   return (
-    <div className="container mx-auto px-4 space-y-8">
-      <div className="flex flex-col justify-center items-center gap-4 mx-auto max-w-2xl w-full">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-8 max-w-7xl">
+      <div className="flex flex-col justify-center items-center gap-4 mx-auto w-full max-w-3xl">
+        <div className="flex justify-end w-full">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 hover:bg-slate-800/40 text-slate-400 hover:text-slate-200"
+            onClick={handleReset}
+            disabled={isLoading}
+          >
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        </div>
         <input
           type="text"
           placeholder="Enter a title for your study plan (e.g. 'Quantum Physics Basics')"
-          className="mb-2 px-4 py-3 rounded-xl border border-input bg-background/70 dark:bg-background/40 text-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+          className="mb-2 px-4 py-3 rounded-xl border border-input bg-background/70 dark:bg-background/40 text-base sm:text-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           disabled={isLoading}
         />
         <Textarea
           placeholder="What would you like to learn about? (e.g., 'quantum physics for beginners', 'advanced calculus', 'machine learning basics')"
-          className="min-h-28 text-lg px-4 py-3 rounded-xl border border-input bg-background/70 dark:bg-background/40 w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+          className="min-h-28 text-base sm:text-lg px-4 py-3 rounded-xl border border-input bg-background/70 dark:bg-background/40 w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={isLoading}
@@ -196,12 +315,12 @@ function MagicalArea({ selectedPlan }) {
         <div className="w-full mb-2">
           <Select value={level} onValueChange={setLevel}>
             <SelectTrigger
-              className="w-full px-4 py-3 rounded-xl border border-input bg-background/70 dark:bg-background/40 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-input bg-background/70 dark:bg-background/40 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-base sm:text-lg"
               disabled={isLoading}
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[60vh]">
               <SelectItem value="Just Curious">
                 Just Curious - basic awareness, fun facts, casual interest
               </SelectItem>
@@ -247,7 +366,7 @@ function MagicalArea({ selectedPlan }) {
         </div>
         <div className="flex flex-row items-center gap-2 w-full">
           <Button
-            className="w-full text-lg h-12 rounded-xl bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-semibold shadow-lg hover:from-slate-600 hover:via-slate-500 hover:to-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full text-base sm:text-lg h-12 rounded-xl bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white font-semibold shadow-lg hover:from-slate-600 hover:via-slate-500 hover:to-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handlePromptSubmit}
             disabled={isLoading || !prompt.trim() || !title.trim()}
           >
@@ -268,7 +387,7 @@ function MagicalArea({ selectedPlan }) {
         )}
       </div>
       {isLoading && (
-        <Card className="flex flex-col glass-card shadow-2xl">
+        <Card className="flex flex-col glass-card shadow-2xl w-full max-w-4xl mx-auto">
           <CardHeader>
             <Skeleton className="h-6 w-2/3 mb-2" />
             <Skeleton className="h-4 w-1/3" />
@@ -282,23 +401,42 @@ function MagicalArea({ selectedPlan }) {
         </Card>
       )}
       {!isLoading && result && (
-        <Card className="flex flex-col glass-card shadow-2xl animate-fade-in relative group">
-          <button
-            onClick={handleCopy}
-            className="absolute top-4 right-4 p-2 rounded-lg bg-slate-800/40 hover:bg-slate-700/40 backdrop-blur-sm border border-slate-700/50 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-slate-900/20 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
-            aria-label="Copy to clipboard"
-          >
-            {copySuccess ? (
-              <Check className="h-5 w-5 text-emerald-400" />
-            ) : (
-              <Copy className="h-5 w-5 text-slate-300 group-hover:text-slate-100 transition-colors duration-300" />
-            )}
-          </button>
-          <CardHeader>
-            <CardTitle className="text-lg line-clamp-2">{title}</CardTitle>
+        <Card className="flex flex-col glass-card shadow-2xl animate-fade-in relative group max-h-[80vh] w-full max-w-4xl mx-auto">
+          <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 hover:bg-slate-800/40 hover:text-slate-200 transition-all duration-300"
+              onClick={handleListen}
+              disabled={!result}
+            >
+              {isSpeaking ? (
+                <VolumeX className="h-4 w-4 text-red-400" />
+              ) : (
+                <Volume2 className="h-4 w-4 text-slate-300 group-hover:text-slate-100" />
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 hover:bg-slate-800/40 hover:text-slate-200 transition-all duration-300"
+              onClick={handleCopy}
+              disabled={!result}
+            >
+              {copySuccess ? (
+                <Check className="h-4 w-4 text-emerald-400" />
+              ) : (
+                <Copy className="h-4 w-4 text-slate-300 group-hover:text-slate-100" />
+              )}
+            </Button>
+          </div>
+          <CardHeader className="flex-none">
+            <CardTitle className="text-lg sm:text-xl line-clamp-2">
+              {title}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1">
-            <div className="prose prose-slate dark:prose-invert max-w-none text-base prose-pre:!bg-slate-900 prose-pre:!text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-code:before:hidden prose-code:after:hidden prose-code:font-mono prose-code:bg-slate-100 prose-code:dark:bg-slate-800 prose-code:px-1.5 prose-code:py-1 prose-code:rounded-md prose-a:text-blue-600 prose-a:underline prose-a:font-semibold prose-a:transition-colors hover:prose-a:text-blue-800 focus:prose-a:ring-2 focus:prose-a:ring-blue-400">
+          <CardContent className="flex-1 overflow-auto">
+            <div className="prose prose-slate dark:prose-invert max-w-none text-sm sm:text-base prose-pre:!bg-slate-900 prose-pre:!text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-code:before:hidden prose-code:after:hidden prose-code:font-mono prose-code:bg-slate-100 prose-code:dark:bg-slate-800 prose-code:px-1.5 prose-code:py-1 prose-code:rounded-md prose-a:text-blue-600 prose-a:underline prose-a:font-semibold prose-a:transition-colors hover:prose-a:text-blue-800 focus:prose-a:ring-2 focus:prose-a:ring-blue-400">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeHighlight]}
@@ -313,6 +451,18 @@ function MagicalArea({ selectedPlan }) {
                       {props.children}
                     </a>
                   ),
+                  pre: (props) => (
+                    <div className="overflow-x-auto">
+                      <pre {...props} />
+                    </div>
+                  ),
+                  img: (props) => (
+                    <img
+                      {...props}
+                      className="max-w-full h-auto rounded-lg"
+                      loading="lazy"
+                    />
+                  ),
                 }}
               >
                 {result}
@@ -326,12 +476,3 @@ function MagicalArea({ selectedPlan }) {
 }
 
 export { MagicalArea };
-
-/*
-Add this to your global CSS (e.g., globals.css) if not using twin.macro or similar:
-
-.glass-card {
-  @apply backdrop-blur-lg bg-white/60 dark:bg-slate-900/60 border border-white/30 dark:border-slate-700/40 shadow-2xl;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-}
-*/
