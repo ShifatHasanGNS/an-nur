@@ -82,19 +82,19 @@ const UserMenu = memo(function UserMenu({ session }) {
           </svg>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="mx-auto justify-center items-center gap-4 bg-transparent backdrop-blur-md">
-        <DropdownMenuLabel className="text-center my-3">
+      <DropdownMenuContent className="w-56 p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800/50 rounded-xl shadow-xl">
+        <DropdownMenuLabel className="text-center my-3 text-slate-200 font-semibold">
           Topics
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator className="border-1 border-slate-600 mb-3" />
+        <DropdownMenuSeparator className="border-slate-700/50 mb-3" />
 
         <ScrollArea className="flex-1 w-full max-h-[24vh] px-2 py-2 overflow-y-auto">
           {topics.map((topic, index) => (
             <DropdownMenuItem key={index} asChild>
               <Link
                 href={`/${topic}`}
-                className="w-full text-center cursor-pointer hover:bg-accent hover:text-accent-foreground py-2 px-3 rounded-md transition-colors"
+                className="w-full text-center cursor-pointer text-slate-300 hover:text-white hover:bg-slate-800/50 py-2 px-3 rounded-lg transition-all duration-200"
                 onClick={handleNavigation(`/${topic}`)}
                 prefetch={true}
               >
@@ -104,16 +104,16 @@ const UserMenu = memo(function UserMenu({ session }) {
           ))}
         </ScrollArea>
 
-        <DropdownMenuSeparator className="border-1 border-rose-300 mt-8 mb-3" />
+        <DropdownMenuSeparator className="border-slate-700/50 mt-4 mb-3" />
 
-        <DropdownMenuLabel className="my-2 text-center">
+        <DropdownMenuLabel className="my-2 text-center text-slate-400 text-sm">
           {session.user.email}
         </DropdownMenuLabel>
 
         <DropdownMenuItem className="my-2 text-center">
           <Button
             variant="destructive"
-            className="w-full mx-auto"
+            className="w-full mx-auto bg-gradient-to-r from-rose-800 via-rose-700 to-rose-800 text-white font-semibold shadow-lg hover:from-rose-700 hover:via-rose-600 hover:to-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-600 focus:ring-offset-2 transition-all duration-300"
             onClick={() => signOut()}
           >
             Sign out

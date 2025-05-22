@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SessionWrapepr } from "@/components/session-wrapper";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { PlanSelectionProvider } from "@/components/nav/plan-selection-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,13 +35,15 @@ export default function RootLayout({ children, session, ...pageProps }) {
           disableTransitionOnChange
         >
           <SessionWrapepr session={session} {...pageProps}>
-            <div className="w-full mx-auto justify-center items-center">
-              <NavBar />
-              <main className="container min-h-screen mx-auto p-6 max-w-screen-xl justify-center items-center">
-                {children}
-              </main>
-              <Footer />
-            </div>
+            <PlanSelectionProvider>
+              <div className="w-full mx-auto justify-center items-center">
+                <NavBar />
+                <main className="container min-h-screen mx-auto p-6 max-w-screen-xl justify-center items-center">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </PlanSelectionProvider>
           </SessionWrapepr>
         </ThemeProvider>
       </body>

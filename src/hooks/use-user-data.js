@@ -57,8 +57,14 @@ function useUserData(session) {
 
     manageUser();
 
+    // Listen for refresh-study-plans event to refetch user data
+    function handleRefresh() {
+      manageUser();
+    }
+    window.addEventListener("refresh-study-plans", handleRefresh);
     return () => {
       isSubscribed = false;
+      window.removeEventListener("refresh-study-plans", handleRefresh);
     };
   }, [session?.user?.email, session?.user?.name, session?.user?.image]);
 

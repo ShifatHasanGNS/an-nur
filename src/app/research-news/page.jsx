@@ -1,15 +1,21 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function YourPageName() {
-  const pathname = usePathname();
-  const pathSegments = pathname.split("/").filter((segment) => segment !== "");
-  const pageName = pathSegments[pathSegments.length - 1] || "home";
+export default function news() {
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    fetch("/api/news")
+      .then((res) => res.text())
+      .then((html) => {
+        setContent(html);
+      });
+  }, []);
 
   return (
     <div>
-      <h1>Hello from your new page!</h1>
-      <p>This is the content of the page: {pageName}</p>
+      <h1 className="text-2xl font-bold">Science News</h1>
+      <div className="mt-4" dangerouslySetInnerHTML={{ __html: content }}></div>
     </div>
   );
 }

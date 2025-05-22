@@ -1,5 +1,33 @@
 import mongoose from "mongoose";
 
+const resultSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "",
+    },
+    prompt: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "",
+    },
+    result: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  {
+    _id: false,
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -8,7 +36,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       index: true,
-      lowercase: true,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill a valid email address",
@@ -37,13 +64,12 @@ const userSchema = new mongoose.Schema(
       type: Number,
       required: true,
       default: 0,
+      min: [0, "Results count cannot be negative"],
     },
-    resultsHistory: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Result",
-      },
-    ],
+    resultsHistory: {
+      type: [resultSchema],
+      default: [],
+    },
   },
   {
     timestamps: true,

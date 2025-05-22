@@ -4,12 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    // Connect to MongoDB
-    await connectMongoDB();
-
-    // Parse and validate request body
-    const body = await request.json();
-    const { email, name, avatar } = body;
+    const { email, name, avatar } = await request.json();
 
     if (!email || !name) {
       return NextResponse.json(
@@ -18,8 +13,14 @@ export async function POST(request) {
       );
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    await connectMongoDB();
+
+    // Check if user exists using lean() for better performance
+    const existingUser = await User.findOne(
+      { email: email.toLowerCase() },
+      "_id"
+    ).lean();
+
     if (existingUser) {
       return NextResponse.json(
         { error: "User already exists" },
@@ -33,12 +34,9 @@ export async function POST(request) {
       name,
       avatar: avatar || null,
       resultsCount: 0,
-      lastLogin: new Date(),
     });
 
-    console.log("Attempting to save user:", { email, name });
     const savedUser = await user.save();
-    console.log("User saved successfully:", savedUser);
 
     return NextResponse.json(
       {
@@ -48,13 +46,24 @@ export async function POST(request) {
           name: savedUser.name,
           avatar: savedUser.avatar,
           resultsCount: savedUser.resultsCount,
-          lastLogin: savedUser.lastLogin,
         },
       },
       { status: 201 }
     );
   } catch (error) {
     console.error("Registration error:", error);
+
+    if (error.name === "ValidationError") {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { error: "User already exists" },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
