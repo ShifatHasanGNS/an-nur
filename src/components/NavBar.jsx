@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function NavBar() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   console.log(session);
 
@@ -47,7 +47,9 @@ export default function NavBar() {
         console.log("Fetching user info for:", session.user.email);
 
         // Try to get existing user
-        const response = await axios.get(`/api/users/info?email=${encodeURIComponent(session.user.email)}`);
+        const response = await axios.get(
+          `/api/users/info?email=${encodeURIComponent(session.user.email)}`
+        );
         console.log("User info response:", response.data);
 
         if (!isSubscribed) return;
@@ -69,7 +71,7 @@ export default function NavBar() {
             const registerResponse = await axios.post("/api/users/register", {
               email: session.user.email,
               name: session.user.name,
-              avatar: session.user.image
+              avatar: session.user.image,
             });
 
             if (!isSubscribed) return;
@@ -83,7 +85,10 @@ export default function NavBar() {
           } catch (registerError) {
             console.error("Error registering user:", registerError);
             if (registerError.response) {
-              console.error("Register error response:", registerError.response.data);
+              console.error(
+                "Register error response:",
+                registerError.response.data
+              );
             }
           }
         } else {
@@ -100,16 +105,13 @@ export default function NavBar() {
     return () => {
       isSubscribed = false;
     };
-
   }, [session?.user?.email]);
-
 
   return (
     <>
       <div className="navbar sticky top-0 justify-center items-center backdrop-blur-lg shadow-lg rounded p-auto mx-auto px-10 sm:px-50 bg-[rgba(49,65,88,0.3)]">
         {session && (
           <div className="navbar-start">
-
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline">
@@ -156,7 +158,6 @@ export default function NavBar() {
                 </SheetFooter>
               </SheetContent>
             </Sheet>
-
           </div>
         )}
 
@@ -166,7 +167,9 @@ export default function NavBar() {
               An-Nur
             </span>
             <span className="text-slate-600 text-2xl">{" / "}</span>
-            <span className="text-slate-400 text-xl font-light font-sans">{nameValue}</span>
+            <span className="text-slate-400 text-xl font-light font-sans">
+              {nameValue}
+            </span>
           </Link>
         </div>
 

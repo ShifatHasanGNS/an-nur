@@ -18,12 +18,12 @@ const connectMongoDB = async (retryCount = 0) => {
       socketTimeoutMS: 45000,
     });
 
-    mongoose.connection.on('error', (err) => {
-      console.error('MongoDB connection error:', err);
+    mongoose.connection.on("error", (err) => {
+      console.error("MongoDB connection error:", err);
     });
 
-    mongoose.connection.on('disconnected', () => {
-      console.log('MongoDB disconnected. Attempting to reconnect...');
+    mongoose.connection.on("disconnected", () => {
+      console.log("MongoDB disconnected. Attempting to reconnect...");
       setTimeout(() => connectMongoDB(), RETRY_DELAY);
     });
 
@@ -37,10 +37,12 @@ const connectMongoDB = async (retryCount = 0) => {
 
     if (retryCount < MAX_RETRIES) {
       console.log(`Retrying connection in ${RETRY_DELAY / 1000} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
       return connectMongoDB(retryCount + 1);
     } else {
-      console.error('Max retry attempts reached. Could not connect to MongoDB.');
+      console.error(
+        "Max retry attempts reached. Could not connect to MongoDB."
+      );
       throw error;
     }
   }

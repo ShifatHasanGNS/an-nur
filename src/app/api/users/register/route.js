@@ -33,24 +33,26 @@ export async function POST(request) {
       name,
       avatar: avatar || null,
       resultsCount: 0,
-      lastLogin: new Date()
+      lastLogin: new Date(),
     });
 
     console.log("Attempting to save user:", { email, name });
     const savedUser = await user.save();
     console.log("User saved successfully:", savedUser);
 
-    return NextResponse.json({
-      message: "User registered successfully",
-      user: {
-        email: savedUser.email,
-        name: savedUser.name,
-        avatar: savedUser.avatar,
-        resultsCount: savedUser.resultsCount,
-        lastLogin: savedUser.lastLogin
-      }
-    }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        message: "User registered successfully",
+        user: {
+          email: savedUser.email,
+          name: savedUser.name,
+          avatar: savedUser.avatar,
+          resultsCount: savedUser.resultsCount,
+          lastLogin: savedUser.lastLogin,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
