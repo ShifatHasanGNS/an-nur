@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, signOut } from "next-auth/react";
@@ -50,27 +50,22 @@ const UserMenu = memo(function UserMenu({ session }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-full transition-all duration-300">
-        {session?.user?.image ? (
-          <Avatar className="border-2 border-slate-700/50 hover:border-slate-600/50 transition-all duration-300">
-            <AvatarImage src={session.user.image} />
-            <AvatarFallback className="bg-slate-800/40 text-slate-200">{`${session.user.name}'s Profile`}</AvatarFallback>
-          </Avatar>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6 text-slate-200 hover:text-white transition-colors duration-300"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-            />
-          </svg>
-        )}
+        <Avatar className="border-2 border-slate-700/50 hover:border-slate-600/50 transition-all duration-300">
+          <AvatarImage
+            src={session.user.image}
+            onError={(e) => {
+              console.error("Avatar image failed to load:", e);
+            }}
+            alt={`${session.user.name}'s avatar`}
+          />
+          <AvatarFallback className="bg-slate-800/40 text-slate-200">
+            {session.user.name
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase() || "U"}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800/50 rounded-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]">
         <DropdownMenuLabel className="text-center my-3 text-slate-200 font-semibold">

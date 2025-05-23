@@ -16,7 +16,6 @@ export async function GET(request) {
 
     await connectMongoDB();
 
-    // Use lean() for better performance since we don't need a full document
     const user = await User.findOne(
       { email: email.toLowerCase() },
       "email name avatar resultsCount resultsHistory"
@@ -26,6 +25,11 @@ export async function GET(request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    const resultsHistory = user.resultsHistory.map((result) => ({
+      ...result,
+      level: result.level || "Just Curious",
+    }));
+
     return NextResponse.json(
       {
         message: "User found",
@@ -34,7 +38,7 @@ export async function GET(request) {
           name: user.name,
           avatar: user.avatar,
           resultsCount: user.resultsCount || 0,
-          resultsHistory: user.resultsHistory || [],
+          resultsHistory: resultsHistory || [],
         },
       },
       { status: 200 }

@@ -6,20 +6,22 @@ export async function POST(request) {
   try {
     await connectMongoDB();
 
-    const { email, title, prompt, result } = await request.json();
+    const body = await request.json();
 
-    if (!email || !title || !prompt || typeof result !== "string") {
+    const { email, title, prompt, result, level } = body;
+
+    if (!email || !title || !prompt || typeof result !== "string" || !level) {
       return NextResponse.json(
-        { error: "Email, title, prompt, and result are required" },
+        { error: "Email, title, prompt, level, and result are required" },
         { status: 400 }
       );
     }
 
-    // Validate structure
     if (
       typeof title !== "string" ||
       typeof prompt !== "string" ||
-      typeof result !== "string"
+      typeof result !== "string" ||
+      typeof level !== "string"
     ) {
       return NextResponse.json(
         { error: "Invalid result structure" },
@@ -27,13 +29,38 @@ export async function POST(request) {
       );
     }
 
-    // Find and update the user in one operation
+    const validLevels = [
+      "Just Curious",
+      "Conversation Level",
+      "Personal Interest/Hobby",
+      "Practical Application",
+      "School/Student Level",
+      "Exam Preparation",
+      "Professional/Work Related",
+      "Specialized/Technical",
+      "Expert/Consultant Level",
+      "Research/Academic",
+      "PhD/Dissertation Level",
+    ];
+
+    if (!validLevels.includes(level)) {
+      return NextResponse.json(
+        { error: "Invalid level value" },
+        { status: 400 }
+      );
+    }
+
     const updatedUser = await User.findOneAndUpdate(
       { email: email.toLowerCase() },
       {
         $inc: { resultsCount: 1 },
         $push: {
-          resultsHistory: { title, prompt, result },
+          resultsHistory: {
+            title,
+            prompt,
+            result,
+            level,
+          },
         },
       },
       {
@@ -47,7 +74,6 @@ export async function POST(request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Return only the latest result and count
     return NextResponse.json(
       {
         message: "Results history updated successfully",

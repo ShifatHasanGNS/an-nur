@@ -13,9 +13,16 @@ export async function POST(request) {
       );
     }
 
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
     await connectMongoDB();
 
-    // Check if user exists using lean() for better performance
     const existingUser = await User.findOne(
       { email: email.toLowerCase() },
       "_id"
@@ -28,7 +35,6 @@ export async function POST(request) {
       );
     }
 
-    // Create and save new user
     const user = new User({
       email: email.toLowerCase(),
       name,

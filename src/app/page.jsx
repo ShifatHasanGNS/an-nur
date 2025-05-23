@@ -8,18 +8,23 @@ import { PlanSelectionContext } from "@/components/nav/plan-selection-context";
 export default function Home() {
   const { selectedPlan } = useContext(PlanSelectionContext);
   return (
-    <>
-      <h1 className="text-5xl font-serif font-extrabold justify-center text-center mt-2 mb-4 text-emerald-50">
-        Let's Find your Study Materials
-      </h1>
-      <h1 className="text-4xl font-serif font-extrabold justify-center text-center mt-4 mb-12 text-slate-50">
-        from the Whole Internet
-      </h1>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      <div className="space-y-2">
+        <h1 className="text-4xl sm:text-5xl font-serif font-extrabold text-center bg-gradient-to-r from-slate-200 to-slate-300 bg-clip-text text-transparent">
+          Let's Find your Study Materials
+        </h1>
+        <h1 className="text-3xl sm:text-4xl font-serif font-extrabold text-center bg-gradient-to-r from-slate-300 to-slate-400 bg-clip-text text-transparent">
+          from the Whole Internet
+        </h1>
+      </div>
 
-      <TypeWriter />
-      <div className="flex flex-row gap-4">
+      <div className="max-w-3xl mx-auto">
+        <TypeWriter />
+      </div>
+
+      <div className="max-w-4xl mx-auto">
         <MagicalArea selectedPlan={selectedPlan} />
       </div>
-    </>
+    </div>
   );
 }

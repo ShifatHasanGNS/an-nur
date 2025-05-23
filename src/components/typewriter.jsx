@@ -11,7 +11,7 @@ function TypeWriter() {
 
   return (
     <>
-      <div className="flex flex-row text-3xl justify-center text-center mb-6 mx-auto">
+      <div className="flex flex-row text-3xl justify-center text-center mx-auto">
         <span className="font-mono font-light text-slate-400">
           {featureText}
         </span>

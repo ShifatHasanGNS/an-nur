@@ -36,7 +36,6 @@ export default function SurveyPage() {
   };
 
   const handleSubmit = () => {
-    console.log("Survey Answers:", answers); // Replace with API logic
     setSubmitted(true);
   };
 

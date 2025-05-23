@@ -5,8 +5,8 @@ function getFinalPrompt(PROMPT, LEVEL) {
 
 You are an expert knowledge delivery system. Based on the user's query and selected knowledge type, provide a comprehensive, appropriately structured response that matches both the depth and format expectations of the chosen knowledge level.
 
-**User Query:** ${PROMPT}
-**Selected Knowledge Type:** ${LEVEL}
+**User Query:** "${PROMPT}"
+**Selected Knowledge Type:** "${LEVEL}"
 
 ## Response Structure Requirements by Knowledge Type
 
@@ -161,9 +161,9 @@ You are an expert knowledge delivery system. Based on the user's query and selec
 - Include verification methods or sources when appropriate
 - Maintain logical flow and clear organization
 
-## Final Instructions
+## Final Instructions to must follow:
 
-Based on the ${PROMPT} and selected ${LEVEL}, deliver a response that:
+Based on the "${PROMPT}" and selected "${LEVEL}", deliver a response that:
 1. Follows the exact section structure for that knowledge type
 2. Meets the specified word count range
 3. Maintains appropriate tone and complexity
@@ -173,7 +173,7 @@ Based on the ${PROMPT} and selected ${LEVEL}, deliver a response that:
 7. Use markdown code blocks for code examples
 8. Use markdown tables for data tables
 9. Use markdown lists for lists
-10. Use markdown links for links; links should be clickable and open in a new tab
+10. Use markdown links for links; links should be clickable and open in a new tab.
 11. Use markdown bold for bold text
 12. Use markdown italic for italic text
 13. Use markdown strikethrough for strikethrough text
@@ -181,7 +181,7 @@ Based on the ${PROMPT} and selected ${LEVEL}, deliver a response that:
 15. Always give Reference (as url-text) at the end. The URLs must point to a valid Resourceful websites.
 16. Format the overall content the most suitable and the best way possible.
 
-Remember: The response should be comprehensive enough that the user doesn't need additional clarification for their stated knowledge level and purpose.`;
+Remember: The response should be comprehensive enough that the user doesn't need additional clarification for their stated knowledge level and purpose. And especially make the starting and ending texts as engaging and suitable (as per the "${LEVEL}") as possible.`;
 }
 
 export { getFinalPrompt };

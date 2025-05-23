@@ -27,9 +27,7 @@ const connectMongoDB = async (retryCount = 0) => {
       setTimeout(() => connectMongoDB(), RETRY_DELAY);
     });
 
-    console.log(
-      `\n✓ MongoDB Connected —⟶ DB Host: ${connectionInstance.connection.host}`
-    );
+    console.log(`\n✓ MongoDB Connected.`);
 
     return connectionInstance;
   } catch (error) {
@@ -47,5 +45,4 @@ const connectMongoDB = async (retryCount = 0) => {
     }
   }
 };
-
 export { connectMongoDB };

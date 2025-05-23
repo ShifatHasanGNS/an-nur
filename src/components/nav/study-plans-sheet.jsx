@@ -7,10 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetTrigger,
-  SheetClose,
   SheetContent,
   SheetHeader,
-  SheetFooter,
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
@@ -68,9 +66,9 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
     function handleRefresh() {
       fetchPlans();
     }
-    window.addEventListener("refresh-study-plans", handleRefresh);
+    window.addEventListener("refresh-history", handleRefresh);
     return () => {
-      window.removeEventListener("refresh-study-plans", handleRefresh);
+      window.removeEventListener("refresh-history", handleRefresh);
     };
   }, [session?.user?.email]);
 
@@ -108,8 +106,8 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
         }
       }
 
-      // Trigger refresh of study plans for other components
-      window.dispatchEvent(new Event("refresh-study-plans"));
+      // Trigger refresh of history for other components
+      window.dispatchEvent(new Event("refresh-history"));
       setPlanToDelete(null);
     } catch (error) {
       console.error("Failed to remove plan:", error);
