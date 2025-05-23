@@ -41,9 +41,6 @@ const resultSchema = new mongoose.Schema(
     },
   },
   {
-    _id: false,
-  },
-  {
     timestamps: true,
   }
 );

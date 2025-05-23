@@ -107,15 +107,9 @@ function MagicalArea({ selectedPlan }) {
     setError(null);
     setResult("");
 
-    if (!session?.user?.email) {
-      setError("Please log in to generate and save study materials.");
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const dataToSend = {
-        email: session.user.email.toLowerCase(),
+        email: session?.user?.email?.toLowerCase() || null,
         title: title.trim(),
         prompt: prompt.trim(),
         level: level,

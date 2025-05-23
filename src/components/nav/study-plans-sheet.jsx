@@ -91,7 +91,7 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
       const response = await axios.delete(
         `/api/users/remove-result?email=${encodeURIComponent(
           session.user.email
-        )}&title=${encodeURIComponent(plan.title)}`
+        )}&id=${encodeURIComponent(plan._id)}`
       );
 
       // Update local state with the new data

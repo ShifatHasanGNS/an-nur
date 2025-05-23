@@ -8,11 +8,11 @@ export async function DELETE(request) {
 
     const { searchParams } = new URL(request.url);
     const email = searchParams.get("email");
-    const title = searchParams.get("title");
+    const id = searchParams.get("id");
 
-    if (!email || !title) {
+    if (!email || !id) {
       return NextResponse.json(
-        { error: "Email and title are required" },
+        { error: "Email and id are required" },
         { status: 400 }
       );
     }
@@ -23,7 +23,7 @@ export async function DELETE(request) {
       {
         $inc: { resultsCount: -1 },
         $pull: {
-          resultsHistory: { title: title },
+          resultsHistory: { _id: id },
         },
       },
       {

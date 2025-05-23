@@ -10,32 +10,43 @@ export async function POST(request) {
   try {
     const { email, title, prompt, level } = await request.json();
 
-    if (!email || !title || !prompt || !level) {
-      return NextResponse.json(
-        { error: "Email, title, prompt, and level are required" },
-        { status: 400 }
-      );
-    }
+    const isGuest = !email;
 
-    const validLevels = [
-      "Just Curious",
-      "Conversation Level",
-      "Personal Interest/Hobby",
-      "Practical Application",
-      "School/Student Level",
-      "Exam Preparation",
-      "Professional/Work Related",
-      "Specialized/Technical",
-      "Expert/Consultant Level",
-      "Research/Academic",
-      "PhD/Dissertation Level",
-    ];
+    if (isGuest) {
+      if (!prompt || !level) {
+        return NextResponse.json(
+          { error: "Prompt and Level are required for Guest users" },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!email || !title || !prompt || !level) {
+        return NextResponse.json(
+          { error: "Title, Prompt, and Level are required" },
+          { status: 400 }
+        );
+      }
 
-    if (!validLevels.includes(level)) {
-      return NextResponse.json(
-        { error: "Invalid level value" },
-        { status: 400 }
-      );
+      const validLevels = [
+        "Just Curious",
+        "Conversation Level",
+        "Personal Interest/Hobby",
+        "Practical Application",
+        "School/Student Level",
+        "Exam Preparation",
+        "Professional/Work Related",
+        "Specialized/Technical",
+        "Expert/Consultant Level",
+        "Research/Academic",
+        "PhD/Dissertation Level",
+      ];
+
+      if (!validLevels.includes(level)) {
+        return NextResponse.json(
+          { error: "Invalid level value" },
+          { status: 400 }
+        );
+      }
     }
 
     const fullPrompt = getFinalPrompt(prompt, level);
@@ -58,43 +69,54 @@ export async function POST(request) {
       );
     }
 
-    await connectMongoDB();
+    if (!isGuest) {
+      await connectMongoDB();
 
-    const updatedUser = await User.findOneAndUpdate(
-      { email: email.toLowerCase() },
-      {
-        $inc: { resultsCount: 1 },
-        $push: {
-          resultsHistory: {
-            title: title.trim(),
-            prompt: prompt.trim(),
-            level: level,
-            result: aiResult,
+      const updatedUser = await User.findOneAndUpdate(
+        { email: email.toLowerCase() },
+        {
+          $inc: { resultsCount: 1 },
+          $push: {
+            resultsHistory: {
+              title: title.trim(),
+              prompt: prompt.trim(),
+              level: level,
+              result: aiResult,
+            },
           },
         },
-      },
-      {
-        new: true,
-        runValidators: true,
-        select: "resultsCount resultsHistory",
+        {
+          new: true,
+          runValidators: true,
+          select: "resultsCount resultsHistory",
+        }
+      );
+
+      if (!updatedUser) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
-    );
 
-    if (!updatedUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(
-      {
-        message: "Study material generated and saved successfully",
-        result: aiResult,
-        user: {
-          resultsCount: updatedUser.resultsCount,
-          resultsHistory: updatedUser.resultsHistory.slice(-1), // Return only the latest
+      return NextResponse.json(
+        {
+          message: "Study material generated and saved successfully",
+          result: aiResult,
+          user: {
+            resultsCount: updatedUser.resultsCount,
+            resultsHistory: updatedUser.resultsHistory.slice(-1), // Return only the latest
+          },
         },
-      },
-      { status: 200 }
-    );
+        { status: 200 }
+      );
+    } else {
+      // Simplified response for guest users
+      return NextResponse.json(
+        {
+          message: "Study material generated successfully (guest user)",
+          result: aiResult,
+        },
+        { status: 200 }
+      );
+    }
   } catch (error) {
     console.error("API Error generating study material:", error);
 
