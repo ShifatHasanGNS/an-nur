@@ -16,7 +16,7 @@ const NavBar = memo(function NavBar() {
   const { setSelectedPlan } = useContext(PlanSelectionContext);
 
   return (
-    <div className="navbar sticky top-0 justify-between items-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] rounded-lg p-auto mx-auto px-6 sm:px-50 bg-slate-900/20 border border-slate-800/30 hover:bg-slate-900/30 transition-all duration-300">
+    <div className="navbar sticky top-0 justify-between items-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] rounded-lg p-auto mx-auto px-6 sm:px-50 bg-slate-900/20 border border-slate-800/30 hover:bg-slate-900/30 transition-all duration-300 z-6">
       <div className="flex items-center gap-4">
         {session && (
           <StudyPlansSheet

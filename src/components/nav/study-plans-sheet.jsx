@@ -143,7 +143,7 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
           </Button>
         </SheetTrigger>
 
-        <SheetContent className="pb-6 w-full sm:max-w-sm flex flex-col gap-4 bg-slate-900/40 backdrop-blur-2xl border-slate-800/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]">
+        <SheetContent className="pb-6 w-full overflow-y-auto max-w-[80vw] sm:max-w-sm flex flex-col gap-4 bg-slate-900/40 backdrop-blur-2xl border-slate-800/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]">
           <SheetHeader className="mt-6 px-4">
             <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-slate-200 via-slate-300 to-slate-400 bg-clip-text text-transparent">
               Study Plans
@@ -154,7 +154,7 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
             </SheetDescription>
           </SheetHeader>
 
-          <ScrollArea className="flex-1 w-full px-4">
+          <ScrollArea className="flex-1 w-full px-4 overflow-y-auto">
             {isLoading ? (
               <div className="space-y-4 mt-4">
                 {[...Array(3)].map((_, i) => (
