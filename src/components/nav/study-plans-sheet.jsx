@@ -33,7 +33,7 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
   const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [lastAddedId, setLastAddedId] = useState(null);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [planToDelete, setPlanToDelete] = useState(null);
   const sheetRef = useRef();
 
@@ -49,8 +49,6 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
       if (response.data?.user?.resultsHistory) {
         const reversed = response.data.user.resultsHistory.reverse();
         setPlans(reversed);
-        // Highlight the most recent plan
-        if (reversed.length > 0) setLastAddedId(reversed[0]._id || null);
       }
     } catch (error) {
       console.error("Failed to fetch study plans:", error);
@@ -98,12 +96,6 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
       if (response.data?.user?.resultsHistory) {
         const reversed = response.data.user.resultsHistory.reverse();
         setPlans(reversed);
-        // Update lastAddedId if needed
-        if (reversed.length > 0) {
-          setLastAddedId(reversed[0]._id || null);
-        } else {
-          setLastAddedId(null);
-        }
       }
 
       // Trigger refresh of history for other components
@@ -187,12 +179,13 @@ const StudyPlansSheet = memo(function StudyPlansSheet({
                     key={plan._id || index}
                     className={cn(
                       "group relative p-4 rounded-lg border cursor-pointer transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_16px_0_rgba(31,38,135,0.1)] hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
-                      lastAddedId === plan._id
+                      selectedPlanId === plan._id
                         ? "bg-slate-800/40 border-slate-600/50 animate-fade-in"
                         : "hover:bg-slate-800/30 border-slate-800/40"
                     )}
                     onClick={() => {
                       onSelectPlan(plan);
+                      setSelectedPlanId(plan._id);
                       const closeEvent = new Event("close-sheet");
                       window.dispatchEvent(closeEvent);
                     }}
