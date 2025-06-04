@@ -1,10 +1,7 @@
-import { memo, useCallback, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { memo } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 import {
   DropdownMenu,
@@ -15,26 +12,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-const topics = ["quiz", "survey"];
-
-function toTitleCase(str) {
-  if (!str) return "";
-  return str.toLowerCase().replace(/\b\w/g, (s) => s.toUpperCase());
-}
-
 const UserMenu = memo(function UserMenu({ session }) {
-  const router = useRouter();
-
-  const handleNavigation = useCallback(
-    (path) => {
-      return (e) => {
-        e.preventDefault();
-        router.push(path);
-      };
-    },
-    [router]
-  );
-
   if (!session) {
     return (
       <Button
@@ -71,23 +49,6 @@ const UserMenu = memo(function UserMenu({ session }) {
         <DropdownMenuLabel className="text-center my-3 text-slate-200 font-semibold">
           Topics
         </DropdownMenuLabel>
-
-        <DropdownMenuSeparator className="border-slate-700/50 mb-3" />
-
-        <ScrollArea className="flex-1 w-full max-h-[24vh] px-2 py-2 overflow-y-auto">
-          {topics.map((topic, index) => (
-            <DropdownMenuItem key={index} asChild>
-              <Link
-                href={`/${topic}`}
-                className="w-full text-center cursor-pointer text-slate-300 hover:text-white hover:bg-slate-800/50 py-2 px-3 rounded-lg transition-all duration-300 hover:shadow-[0_4px_16px_0_rgba(31,38,135,0.1)]"
-                onClick={handleNavigation(`/${topic}`)}
-                prefetch={true}
-              >
-                {toTitleCase(topic)}
-              </Link>
-            </DropdownMenuItem>
-          ))}
-        </ScrollArea>
 
         <DropdownMenuSeparator className="border-slate-700/50 mt-4 mb-3" />
 
