@@ -46,12 +46,6 @@ const UserMenu = memo(function UserMenu({ session }) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800/50 rounded-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]">
-        <DropdownMenuLabel className="text-center my-3 text-slate-200 font-semibold">
-          Topics
-        </DropdownMenuLabel>
-
-        <DropdownMenuSeparator className="border-slate-700/50 mt-4 mb-3" />
-
         <DropdownMenuLabel className="my-2 text-center text-slate-400/80 text-sm">
           {session.user.email}
         </DropdownMenuLabel>
