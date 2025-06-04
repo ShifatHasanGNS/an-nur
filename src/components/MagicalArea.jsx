@@ -1,9 +1,10 @@
 "use client";
 
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { Textarea } from "@/components/ui/textarea";
+import { PlanSelectionContext } from "@/components/nav/plan-selection-context";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -38,6 +39,7 @@ import {
 
 function MagicalArea({ selectedPlan }) {
   const { data: session } = useSession();
+  const { setSelectedPlan } = useContext(PlanSelectionContext);
   const [prompt, setPrompt] = useState("");
   const [title, setTitle] = useState("");
   const [result, setResult] = useState("");
@@ -92,6 +94,7 @@ function MagicalArea({ selectedPlan }) {
     setError(null);
     setLevel("Just Curious");
     setCopySuccess(false);
+    setSelectedPlan(null);
   };
 
   async function handlePromptSubmit() {
@@ -197,7 +200,7 @@ function MagicalArea({ selectedPlan }) {
             onClick={handleReset}
             disabled={isLoading}
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-6 w-6" />
           </Button>
         </div>
 
