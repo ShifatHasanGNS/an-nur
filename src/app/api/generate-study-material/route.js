@@ -51,7 +51,9 @@ export async function POST(request) {
 
     const fullPrompt = getFinalPrompt(prompt, level);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({
+      model: process.env.GEMINI_AI_MODEL,
+    });
     const response = await model.generateContent(fullPrompt);
     if (!response?.response) {
       console.error("AI Generation Error: No response received");

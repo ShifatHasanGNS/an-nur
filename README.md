@@ -1,4 +1,4 @@
-# An-Nur | IT Hackathon Project for 1st-SN Bose National Science Festival 2025
+# An-Nur | Simplified AI Experience for Busy Learners
 
 ## Installation
 

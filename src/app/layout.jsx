@@ -18,8 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "An-Nur",
-  description:
-    "IT Hackathon Project for 1st-SN Bose National Science Festival 2025",
+  description: "Simplified AI Experience for Busy Learners",
 };
 
 export default function RootLayout({ children, session, ...pageProps }) {
