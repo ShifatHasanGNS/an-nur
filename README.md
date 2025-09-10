@@ -1,5 +1,7 @@
 # An-Nur | Simplified AI Experience for Busy Learners
 
+![an-nur-home](./image/an-nur-home.png)
+
 ## Installation
 
 > **install `pnpm`:**
